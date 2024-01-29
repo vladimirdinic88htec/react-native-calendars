@@ -63,7 +63,7 @@ export interface CalendarProps extends CalendarHeaderProps, DayProps {
   customHeader?: any;
   /** Allow selection of dates before minDate or after maxDate */
   allowSelectionOutOfRange?: boolean;
-  /** Allow selection of dates before minDate or after maxDate */
+  /** Year selector */
   yearSelector?: boolean;
   
 }
@@ -251,7 +251,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
 
   const renderYearSelector = () => {
     
-    return <Text value="Bravo"/>;
+    return <Text>Bravo</Text>;
   };
 
   const shouldDisplayIndicator = useMemo(() => {
@@ -264,8 +264,9 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     return false;
   }, [currentMonth, displayLoadingIndicator, markedDates]);
 
-  const renderHeader = () => {
+  const renderHeader = (yearSelector?: boolean) => {
     const headerProps = extractHeaderProps(props);
+    headerProps.yearSelector = yearSelector;
     const ref = customHeader ? undefined : header;
     const CustomHeader = customHeader;
     const HeaderComponent = customHeader ? CustomHeader : CalendarHeader;
@@ -297,8 +298,8 @@ const Calendar = (props: CalendarProps & ContextProp) => {
         accessibilityElementsHidden={accessibilityElementsHidden} // iOS
         importantForAccessibility={importantForAccessibility} // Android
       >
-        {renderHeader()}
-        { !yearSelector ? renderYearSelector() : renderMonth() }
+        {renderHeader(yearSelector)}
+        { !yearSelector ? renderMonth() : renderYearSelector()}
       </View>
     </GestureComponent>
   );

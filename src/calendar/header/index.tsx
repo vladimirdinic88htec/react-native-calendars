@@ -1,7 +1,7 @@
 import includes from 'lodash/includes';
 import XDate from 'xdate';
 
-import React, {Fragment, ReactNode, useCallback, useMemo, forwardRef, useImperativeHandle, useRef} from 'react';
+import React, {Fragment, ReactNode, useCallback, useMemo, forwardRef, useImperativeHandle, useRef, useState, useEffect} from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -68,6 +68,8 @@ export interface CalendarHeaderProps {
   current?: string;
   /** Left inset for the timeline calendar header, default is 72 */
   timelineLeftInset?: number;
+  /** Year selector */
+  yearSelector?: boolean;
 }
 
 const accessibilityActions = [
@@ -96,6 +98,7 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
     displayLoadingIndicator,
     customHeaderTitle,
     renderHeader,
+    yearSelector,
     webAriaLevel,
     testID,
     accessibilityElementsHidden,
@@ -105,6 +108,17 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
     timelineLeftInset
   } = props;
   
+  const [yearSelectionInProgress, setYearSelectionInProgress] =
+  useState<boolean>(false);
+
+  const changeYearPressed = () => {
+  setYearSelectionInProgress(true);
+  };
+
+  useEffect(() => {
+    setYearSelectionInProgress(yearSelector);
+  }, []);
+
   const numberOfDaysCondition = useMemo(() => {
     return numberOfDays && numberOfDays > 1;
   }, [numberOfDays]);
@@ -204,6 +218,7 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
 
     return (
       <Fragment>
+                <TouchableOpacity onPress={changeYearPressed}>
         <Text
           allowFontScaling={false}
           style={style.current.monthText}
@@ -212,6 +227,7 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
         >
           {formatNumbers(month?.toString(monthFormat))}
         </Text>
+        </TouchableOpacity>
       </Fragment>
     );
   };
@@ -274,6 +290,10 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
     }
   };
 
+  const renderEmpty = () => {
+    return <View/>;
+  };
+
   return (
     <View
       testID={testID}
@@ -293,7 +313,7 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
         </View>
         {_renderArrow('right')}
       </View>
-      {renderDayNames()}
+      {!yearSelectionInProgress ? renderDayNames() : renderEmpty()}
     </View>
   );
 });
