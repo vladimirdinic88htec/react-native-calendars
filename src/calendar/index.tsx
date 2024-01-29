@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import XDate from 'xdate';
 import isEmpty from 'lodash/isEmpty';
 import React, {useRef, useState, useEffect, useCallback, useMemo} from 'react';
-import {View, ViewStyle, StyleProp} from 'react-native';
+import {View, Text, ViewStyle, StyleProp} from 'react-native';
 // @ts-expect-error
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -63,6 +63,9 @@ export interface CalendarProps extends CalendarHeaderProps, DayProps {
   customHeader?: any;
   /** Allow selection of dates before minDate or after maxDate */
   allowSelectionOutOfRange?: boolean;
+  /** Allow selection of dates before minDate or after maxDate */
+  yearSelector?: boolean;
+  
 }
 
 /**
@@ -79,6 +82,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     minDate,
     maxDate,
     allowSelectionOutOfRange,
+    yearSelector,
     onDayPress,
     onDayLongPress,
     onMonthChange,
@@ -245,6 +249,11 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     return <View style={style.current.monthView}>{weeks}</View>;
   };
 
+  const renderYearSelector = () => {
+    
+    return <Text value="Bravo"/>;
+  };
+
   const shouldDisplayIndicator = useMemo(() => {
     if (currentMonth) {
       const lastMonthOfDay = toMarkingFormat(currentMonth.clone().addMonths(1, true).setDate(1).addDays(-1));
@@ -289,7 +298,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
         importantForAccessibility={importantForAccessibility} // Android
       >
         {renderHeader()}
-        {renderMonth()}
+        { !yearSelector ? renderYearSelector() : renderMonth() }
       </View>
     </GestureComponent>
   );
