@@ -30,6 +30,7 @@ export default function getStyle(theme: Theme = {}) {
       margin: 5,
       padding: 10
     },
+    yearSelector: {height: 320},
     ...(theme['stylesheet.calendar.main'] || {})
   });
 }

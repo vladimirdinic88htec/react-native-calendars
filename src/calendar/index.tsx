@@ -266,7 +266,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
   const renderItem = ({ item }: { item: number }) => (
     <TouchableOpacity
       onPress={() => {
-        changeYear(false);
+        setYearSelectionInProgress(!yearSelectionInProgress);
       }}
     >
       <View style={style.current.yearItem}>
@@ -278,6 +278,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
   const renderYearSelector = () => {
     return (
 <FlatList
+      style={style.current.yearSelector}
       data={years}
       renderItem={renderItem}
       horizontal={false}
