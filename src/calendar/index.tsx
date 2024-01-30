@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import XDate from 'xdate';
 import isEmpty from 'lodash/isEmpty';
 import React, {useRef, useState, useEffect, useCallback, useMemo} from 'react';
-import {View, Text, ViewStyle, StyleProp} from 'react-native';
+import {View, ScrollView, FlatList, ViewStyle, StyleProp, TouchableOpacity, Text } from 'react-native';
 // @ts-expect-error
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -249,9 +249,34 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     return <View style={style.current.monthView}>{weeks}</View>;
   };
 
+  const years: number[] = Array.from(
+    { length: new Date().getFullYear() - 1900 + 1 },
+    (_, index) => 1900 + index
+  );
+
+  const renderItem = ({ item }: { item: number }) => (
+    <TouchableOpacity
+      onPress={() => {
+        
+      }}
+    >
+      <View style={style.yearItem}>
+        <Text>{item}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   const renderYearSelector = () => {
-    
-    return <Text>Bravo</Text>;
+    return (<ScrollView scrollEnabled={true}>
+    <FlatList
+      nestedScrollEnabled={false}
+      scrollEnabled={false}
+      data={years}
+      renderItem={renderItem}
+      horizontal={false}
+      keyExtractor={(item) => item.toString()}
+    />
+  </ScrollView>);
   };
 
   const shouldDisplayIndicator = useMemo(() => {

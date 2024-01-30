@@ -25,6 +25,11 @@ export default function getStyle(theme: Theme = {}) {
       flexDirection: 'row',
       justifyContent: 'space-around'
     },
+    yearItem: {
+      alignSelf: "center",
+      margin: 5,
+      padding: 10
+    },
     ...(theme['stylesheet.calendar.main'] || {})
   });
 }
