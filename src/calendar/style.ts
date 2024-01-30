@@ -28,7 +28,8 @@ export default function getStyle(theme: Theme = {}) {
     yearItem: {
       alignSelf: "center",
       margin: 5,
-      padding: 10
+      padding: 10,
+      color: "#ff0000"
     },
     yearSelector: {height: 320},
     ...(theme['stylesheet.calendar.main'] || {})
