@@ -300,7 +300,7 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
   };
 
   const renderEmpty = () => {
-    return <View/>;
+    return <View style={headerStyle}/>;
   };
 
   return (
