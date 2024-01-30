@@ -18,6 +18,7 @@ import {
 import {formatNumbers, weekDayNames} from '../../dateutils';
 import styleConstructor from './style';
 import {Theme, Direction} from '../../types';
+import { bool } from 'prop-types';
 
 export interface CalendarHeaderProps {
   month?: XDate;
@@ -70,6 +71,8 @@ export interface CalendarHeaderProps {
   timelineLeftInset?: number;
   /** Year selector */
   yearSelector?: boolean;
+  /** Change year */
+  changeYear?: (changeYear: boolean) => void;
 }
 
 const accessibilityActions = [
@@ -105,18 +108,24 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
     importantForAccessibility,
     numberOfDays,
     current = '',
-    timelineLeftInset
+    timelineLeftInset,
+    changeYear
   } = props;
   
   const [yearSelectionInProgress, setYearSelectionInProgress] =
   useState<boolean>(false);
 
-  const changeYearPressed = () => {
-  setYearSelectionInProgress(true);
-  };
+  const changeYearPressed = useCallback(() => {
+    setYearSelectionInProgress(!yearSelectionInProgress);
+    if (typeof changeYear === 'function') {
+      return changeYear(!yearSelectionInProgress);
+    }
+    return undefined;
+  }, [changeYear]);
+
 
   useEffect(() => {
-    setYearSelectionInProgress(yearSelector);
+    setYearSelectionInProgress(yearSelector ?? false);
   }, []);
 
   const numberOfDaysCondition = useMemo(() => {

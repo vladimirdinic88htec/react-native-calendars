@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import XDate from 'xdate';
 import isEmpty from 'lodash/isEmpty';
 import React, {useRef, useState, useEffect, useCallback, useMemo} from 'react';
-import {View, ScrollView, FlatList, ViewStyle, StyleProp, TouchableOpacity, Text } from 'react-native';
+import {View, ViewStyle, StyleProp, TouchableOpacity, Text, } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 // @ts-expect-error
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -105,11 +106,19 @@ const Calendar = (props: CalendarProps & ContextProp) => {
   const header = useRef();
   const weekNumberMarking = useRef({disabled: true, disableTouchEvent: true});
 
+  const [yearSelectionInProgress, setYearSelectionInProgress] =
+  useState<boolean>(false);
+
   useEffect(() => {
     if (initialDate) {
       setCurrentMonth(parseDate(initialDate));
     }
   }, [initialDate]);
+
+  useEffect(() => {
+    setYearSelectionInProgress(yearSelector ?? false);
+  }, []);
+
 
   useDidUpdate(() => {
     const _currentMonth = currentMonth.clone();
@@ -257,26 +266,23 @@ const Calendar = (props: CalendarProps & ContextProp) => {
   const renderItem = ({ item }: { item: number }) => (
     <TouchableOpacity
       onPress={() => {
-        
+        changeYear(false);
       }}
     >
-      <View style={style.yearItem}>
+      <View style={style.current.yearItem}>
         <Text>{item}</Text>
       </View>
-    </TouchableOpacity>
+     </TouchableOpacity>
   );
 
   const renderYearSelector = () => {
-    return (<ScrollView scrollEnabled={true}>
-    <FlatList
-      nestedScrollEnabled={false}
-      scrollEnabled={false}
+    return (
+<FlatList
       data={years}
       renderItem={renderItem}
       horizontal={false}
       keyExtractor={(item) => item.toString()}
-    />
-  </ScrollView>);
+    />);
   };
 
   const shouldDisplayIndicator = useMemo(() => {
@@ -304,6 +310,9 @@ const Calendar = (props: CalendarProps & ContextProp) => {
         ref={ref}
         month={currentMonth}
         addMonth={addMonth}
+        changeYear={(yearChanged: boolean) => {
+          setYearSelectionInProgress(yearChanged);
+        }}
         displayLoadingIndicator={shouldDisplayIndicator}
       />
     );
@@ -323,8 +332,8 @@ const Calendar = (props: CalendarProps & ContextProp) => {
         accessibilityElementsHidden={accessibilityElementsHidden} // iOS
         importantForAccessibility={importantForAccessibility} // Android
       >
-        {renderHeader(yearSelector)}
-        { !yearSelector ? renderMonth() : renderYearSelector()}
+        {renderHeader(yearSelectionInProgress)}
+        { !yearSelectionInProgress ? renderMonth() : renderYearSelector()}
       </View>
     </GestureComponent>
   );
