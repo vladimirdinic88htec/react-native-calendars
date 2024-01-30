@@ -3,7 +3,7 @@ import XDate from 'xdate';
 import isEmpty from 'lodash/isEmpty';
 import React, {useRef, useState, useEffect, useCallback, useMemo} from 'react';
 import {View, ViewStyle, StyleProp, TouchableOpacity, Text, } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 // @ts-expect-error
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -263,27 +263,22 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     (_, index) => 1900 + index
   );
 
-  const renderItem = ({ item }: { item: number }) => (
-    <TouchableOpacity
-      onPress={() => {
-        setYearSelectionInProgress(!yearSelectionInProgress);
-      }}
-    >
-      <View style={style.current.yearItem}>
-        <Text>{item}</Text>
-      </View>
-     </TouchableOpacity>
-  );
-
   const renderYearSelector = () => {
     return (
-<FlatList
-      style={style.current.yearSelector}
-      data={years}
-      renderItem={renderItem}
-      horizontal={false}
-      keyExtractor={(item) => item.toString()}
-    />);
+<ScrollView style={style.current.yearSelector}>
+{years.map((year, index) => (
+  <TouchableOpacity key={index}
+  onPress={() => {
+    setYearSelectionInProgress(!yearSelectionInProgress);
+  }}
+>
+  <View style={style.current.yearItem}>
+    <Text>{year}</Text>
+  </View>
+ </TouchableOpacity>
+       
+    ))}
+    </ScrollView>);
   };
 
   const shouldDisplayIndicator = useMemo(() => {
